@@ -26,6 +26,10 @@ type Note = {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  user?: {
+    id: string;
+    name: string;
+  };
 };
 
 export default function NotePage() {
@@ -257,12 +261,22 @@ export default function NotePage() {
           {isEditing ? (
             <h1 className="text-2xl font-bold text-white">Edit Note</h1>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2">
               <h1 className="text-2xl font-bold text-white">{note.title}</h1>
               {note.isPublic && (
-                <span className="text-xs px-2 py-1 rounded-full bg-violet-900/30 text-violet-300">
-                  Public
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-1 rounded-full bg-violet-900/30 text-violet-300">
+                    Public
+                  </span>
+                  {note.user && (
+                    <Link
+                      href={`/users/${note.user.id}`}
+                      className="text-sm text-violet-400 hover:text-violet-300"
+                    >
+                      By {note.user.name}
+                    </Link>
+                  )}
+                </div>
               )}
             </div>
           )}

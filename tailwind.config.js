@@ -18,38 +18,38 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       borderRadius: {
@@ -59,12 +59,12 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
+          from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          to: { height: 0 },
         },
       },
       animation: {
@@ -74,54 +74,39 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            color: "#ffffff",
+            color: "#fff",
             a: {
-              color: "#3b82f6",
+              color: "#8b5cf6",
               "&:hover": {
-                color: "#1e40af",
+                color: "#a78bfa",
               },
             },
-            h1: {
-              color: "#ffffff",
-            },
-            h2: {
-              color: "#ffffff",
-            },
-            h3: {
-              color: "#ffffff",
-            },
-            h4: {
-              color: "#ffffff",
-            },
-            h5: {
-              color: "#ffffff",
-            },
-            h6: {
-              color: "#ffffff",
-            },
-            strong: {
-              color: "#ffffff",
-            },
+            h1: { color: "#fff" },
+            h2: { color: "#fff" },
+            h3: { color: "#fff" },
+            h4: { color: "#fff" },
+            h5: { color: "#fff" },
+            h6: { color: "#fff" },
+            strong: { color: "#fff" },
             code: {
               color: "#d1d5db",
-              backgroundColor: "#1f2937",
-              padding: "0.25rem",
+              backgroundColor: "#374151",
+              padding: "0.2em 0.4em",
               borderRadius: "0.25rem",
-              fontWeight: "400",
             },
             blockquote: {
-              color: "#d1d5db",
+              color: "#9ca3af",
               borderLeftColor: "#4b5563",
             },
-            "ul > li::marker": {
-              color: "#9ca3af",
+            "code::before": {
+              content: '""',
             },
-            "ol > li::marker": {
-              color: "#9ca3af",
+            "code::after": {
+              content: '""',
             },
-            hr: {
-              borderColor: "#374151",
-            },
+            "ol > li::marker": { color: "#9ca3af" },
+            "ul > li::marker": { color: "#9ca3af" },
+            hr: { borderColor: "#4b5563" },
           },
         },
       },

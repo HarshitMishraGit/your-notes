@@ -34,6 +34,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log("status", status);
     // Redirect to login if not authenticated
     if (status === "unauthenticated") {
       router.push("/auth/signin");
@@ -43,7 +44,7 @@ export default function Home() {
     if (status === "authenticated") {
       fetchNotes();
     }
-  }, [status, router]);
+  }, [status]);
 
   const fetchNotes = async () => {
     try {

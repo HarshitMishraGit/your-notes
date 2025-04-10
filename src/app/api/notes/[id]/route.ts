@@ -12,7 +12,7 @@ interface Params {
 export async function GET(request: Request, { params }: Params) {
   try {
     const session = await getServerSession();
-    const id = params.id;
+    const { id } = await params;
 
     // First check if the note exists
     const note = await prisma.note.findUnique({
@@ -27,6 +27,12 @@ export async function GET(request: Request, { params }: Params) {
         createdAt: true,
         updatedAt: true,
         userId: true,
+        user: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
       },
     });
 
@@ -36,7 +42,7 @@ export async function GET(request: Request, { params }: Params) {
 
     // If the note is public, anyone can access it
     if (note.isPublic) {
-      // Remove userId for privacy
+      // Include author info but remove userId for privacy
       const { userId, ...publicNote } = note;
       return NextResponse.json(publicNote);
     }
@@ -73,7 +79,7 @@ export async function GET(request: Request, { params }: Params) {
 export async function PUT(request: Request, { params }: Params) {
   try {
     const session = await getServerSession();
-    const id = params.id;
+    const { id } = params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -137,7 +143,7 @@ export async function PUT(request: Request, { params }: Params) {
 export async function DELETE(request: Request, { params }: Params) {
   try {
     const session = await getServerSession();
-    const id = params.id;
+    const { id } = params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

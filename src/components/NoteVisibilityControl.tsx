@@ -81,7 +81,7 @@ export default function NoteVisibilityControl({
           <Switch
             checked={isPublic}
             onCheckedChange={handleVisibilityChange}
-            className="data-[state=checked]:bg-violet-600"
+            className="data-[state=checked]:bg-violet-600 bg-white"
           />
         </div>
 
