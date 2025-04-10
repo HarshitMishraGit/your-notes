@@ -9,6 +9,7 @@ const publicPaths = [
   "/auth/error",
   "/api/auth",
   "/share/",
+  "/users/",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -19,8 +20,8 @@ export async function middleware(request: NextRequest) {
     (publicPath) => path.startsWith(publicPath) || path === "/"
   );
 
-  // For paths starting with /share/, we need to allow unauthenticated access
-  if (path.startsWith("/share/")) {
+  // For paths starting with /share/ or /users/, we need to allow unauthenticated access
+  if (path.startsWith("/share/") || path.startsWith("/users/")) {
     return NextResponse.next();
   }
 
@@ -31,6 +32,11 @@ export async function middleware(request: NextRequest) {
     if (request.method === "GET") {
       return NextResponse.next();
     }
+  }
+
+  // For API routes to fetch user data
+  if (path.startsWith("/api/users/") && request.method === "GET") {
+    return NextResponse.next();
   }
 
   const token = await getToken({ req: request });
