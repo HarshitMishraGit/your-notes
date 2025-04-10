@@ -27,12 +27,12 @@ export default async function RootLayout({
             {session && (
               <header className="border-b border-neutral-800 py-2 px-4">
                 <div className="flex justify-between items-center">
-                  <UserDropdown />
+                <div className="w-10"></div>
+               
                   <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
                     Notes App
                   </h1>
-                  <div className="w-10"></div>{" "}
-                  {/* Spacer to center the title */}
+                  <UserDropdown />
                 </div>
               </header>
             )}

@@ -9,6 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import ReactMarkdown from "react-markdown";
+import NoteVisibilityControl from "@/components/NoteVisibilityControl";
+import Link from "next/link";
+import { ArrowLeft, Pencil, Save, Trash2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 // Import MD Editor dynamically to avoid SSR issues
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
@@ -144,6 +148,38 @@ export default function NotePage() {
     }
   };
 
+  const handleVisibilityChange = async (newValue: boolean) => {
+    try {
+      setIsSubmitting(true);
+      const response = await fetch(`/api/notes/${params.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          content,
+          isPublic: newValue,
+          tags: tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update note visibility");
+      }
+
+      const updatedNote = await response.json();
+      setNote(updatedNote);
+      setIsPublic(updatedNote.isPublic);
+    } catch (error) {
+      console.error("Error updating note visibility:", error);
+      setError("Failed to update note visibility");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (status === "loading" || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -167,7 +203,55 @@ export default function NotePage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <Link href="/">
+            <Button
+              variant="outline"
+              className="bg-transparent text-white border-neutral-700 hover:bg-neutral-800"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back
+            </Button>
+          </Link>
+          {!isEditing && (
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center gap-2 bg-neutral-900 border-neutral-800 text-white hover:bg-neutral-800"
+            >
+              <Pencil className="h-4 w-4" />
+              Edit
+            </Button>
+          )}
+          {isEditing && (
+            <Button
+              onClick={handleSave}
+              disabled={isSubmitting}
+              className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white"
+            >
+              {isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
+              Save
+            </Button>
+          )}
+          <NoteVisibilityControl
+            noteId={params.id as string}
+            isPublic={isPublic}
+            onVisibilityChange={handleVisibilityChange}
+          />
+        </div>
+        <Button
+          onClick={handleDelete}
+          variant="destructive"
+          className="bg-red-600 hover:bg-red-700 text-white"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+
       <div className="mb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           {isEditing ? (
@@ -182,56 +266,6 @@ export default function NotePage() {
               )}
             </div>
           )}
-
-          <div className="flex items-center gap-4">
-            {isEditing ? (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditing(false)}
-                  className="border-neutral-700 text-neutral-300 hover:text-white hover:bg-neutral-800"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={isSubmitting}
-                  className="bg-violet-600 hover:bg-violet-700"
-                >
-                  {isSubmitting ? "Saving..." : "Save"}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push("/")}
-                  className="border-neutral-700 text-neutral-300 hover:text-white hover:bg-neutral-800"
-                >
-                  Back
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditing(true)}
-                  className="border-neutral-700 text-neutral-300 hover:text-white hover:bg-neutral-800"
-                >
-                  Edit
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={handleDelete}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  Delete
-                </Button>
-              </>
-            )}
-          </div>
         </div>
 
         {error && (

@@ -12,21 +12,11 @@ interface Params {
 export async function GET(request: Request, { params }: Params) {
   try {
     const session = await getServerSession();
+    const id = params.id;
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
+    // First check if the note exists
     const note = await prisma.note.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: {
         id: true,
         title: true,
@@ -44,15 +34,29 @@ export async function GET(request: Request, { params }: Params) {
       return NextResponse.json({ message: "Note not found" }, { status: 404 });
     }
 
+    // If the note is public, anyone can access it
+    if (note.isPublic) {
+      // Remove userId for privacy
+      const { userId, ...publicNote } = note;
+      return NextResponse.json(publicNote);
+    }
+
+    // If the note is private, check authentication
+    if (!session?.user?.email) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
     // Check if the note belongs to the user
     if (note.userId !== user.id) {
-      // If note is not public, return unauthorized
-      if (!note.isPublic) {
-        return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
-      }
-
-      // If public, remove some fields
-      delete note.userId;
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
     return NextResponse.json(note);
@@ -69,6 +73,7 @@ export async function GET(request: Request, { params }: Params) {
 export async function PUT(request: Request, { params }: Params) {
   try {
     const session = await getServerSession();
+    const id = params.id;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -84,7 +89,7 @@ export async function PUT(request: Request, { params }: Params) {
 
     // Find the note
     const note = await prisma.note.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { userId: true },
     });
 
@@ -108,7 +113,7 @@ export async function PUT(request: Request, { params }: Params) {
     }
 
     const updatedNote = await prisma.note.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         content,
@@ -132,6 +137,7 @@ export async function PUT(request: Request, { params }: Params) {
 export async function DELETE(request: Request, { params }: Params) {
   try {
     const session = await getServerSession();
+    const id = params.id;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -147,7 +153,7 @@ export async function DELETE(request: Request, { params }: Params) {
 
     // Find the note
     const note = await prisma.note.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { userId: true },
     });
 
@@ -162,12 +168,12 @@ export async function DELETE(request: Request, { params }: Params) {
 
     // Delete any images associated with the note first
     await prisma.image.deleteMany({
-      where: { noteId: params.id },
+      where: { noteId: id },
     });
 
     // Then delete the note
     await prisma.note.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Note deleted successfully" });

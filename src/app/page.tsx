@@ -13,15 +13,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PlusIcon } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 type Note = {
   id: string;
   title: string;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  contentType: string;
   isPublic: boolean;
   tags: string[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export default function Home() {
@@ -142,10 +145,11 @@ export default function Home() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="text-neutral-300">
-                  <p className="line-clamp-3">
-                    {note.content.replace(/[#*`]/g, "").substring(0, 100)}
-                    {note.content.length > 100 && "..."}
-                  </p>
+                  <div className="line-clamp-3 prose prose-sm prose-invert max-w-none">
+                    <ReactMarkdown>
+                      {note.content.substring(0, 150)}
+                    </ReactMarkdown>
+                  </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <div className="flex gap-2">

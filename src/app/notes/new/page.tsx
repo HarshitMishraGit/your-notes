@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import Link from "next/link";
 
 // Import MD Editor dynamically to avoid SSR issues
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
@@ -93,26 +94,9 @@ export default function NewNote() {
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <form onSubmit={handleSubmit}>
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-            <h1 className="text-2xl font-bold text-white">Create New Note</h1>
-            <div className="flex items-center gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-                className="border-neutral-700 text-neutral-300 hover:text-white hover:bg-neutral-800"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-violet-600 hover:bg-violet-700"
-              >
-                {isSubmitting ? "Saving..." : "Save Note"}
-              </Button>
-            </div>
-          </div>
+          <h1 className="text-3xl font-bold text-white mb-6">
+            Create New Note
+          </h1>
 
           {error && (
             <div className="mb-4 p-3 bg-red-900/30 border border-red-800 rounded text-red-300">
@@ -147,16 +131,23 @@ export default function NewNote() {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center justify-between p-4 border border-neutral-800 rounded-md bg-neutral-900/50">
+              <div className="space-y-0.5">
+                <Label htmlFor="public" className="text-base text-neutral-200">
+                  Make note public
+                </Label>
+                <p className="text-sm text-neutral-400">
+                  {isPublic
+                    ? "Anyone with the link can view this note"
+                    : "Only you can view this note"}
+                </p>
+              </div>
               <Switch
                 id="public"
                 checked={isPublic}
                 onCheckedChange={setIsPublic}
                 className="data-[state=checked]:bg-violet-600"
               />
-              <Label htmlFor="public" className="text-neutral-200">
-                Make note public
-              </Label>
             </div>
           </div>
         </div>
@@ -168,6 +159,24 @@ export default function NewNote() {
             height={500}
             preview="edit"
           />
+        </div>
+
+        <div className="flex justify-between mt-6">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push("/")}
+            className="border-neutral-700 text-neutral-300 hover:text-white hover:bg-neutral-800"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-violet-600 hover:bg-violet-700 text-white px-8"
+          >
+            {isSubmitting ? "Creating..." : "Create Note"}
+          </Button>
         </div>
       </form>
     </div>
