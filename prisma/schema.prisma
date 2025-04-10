@@ -27,12 +27,28 @@ model User {
 model Note {
   id          String      @id @default(cuid())
   title       String
-  content     String
+  content     String      @db.Text // Using Text for potentially large markdown content
+  contentType String      @default("markdown") // For future flexibility
+  isPublic    Boolean     @default(false)
+  tags        String[]    @default([])
+  images      Image[]     // Relationship to uploaded images
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   userId      String
   user        User        @relation(fields: [userId], references: [id])
   sharedNotes SharedNote[]
+}
+
+model Image {
+  id          String    @id @default(cuid())
+  filename    String
+  path        String    // Path to the image in MinIO
+  mimeType    String
+  size        Int
+  noteId      String
+  note        Note      @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model SharedNote {
