@@ -25,7 +25,7 @@ type SharedNote = {
 
 export default function SharedNote() {
   const params = useParams();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const [note, setNote] = useState<SharedNote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
