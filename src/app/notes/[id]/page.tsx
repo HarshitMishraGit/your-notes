@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import ReactMarkdown from "react-markdown";
 import NoteVisibilityControl from "@/components/NoteVisibilityControl";
+import { Comments } from "@/components/Comments";
 import Link from "next/link";
 import { ArrowLeft, Pencil, Save, Trash2 } from "lucide-react";
 import { Loader2 } from "lucide-react";
@@ -359,6 +360,13 @@ export default function NotePage() {
       ) : (
         <div className="prose prose-invert max-w-none bg-neutral-900 p-6 rounded-lg border border-neutral-800">
           <ReactMarkdown>{note.content}</ReactMarkdown>
+        </div>
+      )}
+
+      {/* Add Comments section */}
+      {!isEditing && (
+        <div className="mt-8 pt-8 border-t border-neutral-800">
+          <Comments noteId={params.id as string} />
         </div>
       )}
     </div>

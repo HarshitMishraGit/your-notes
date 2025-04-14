@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from "react-markdown";
+import { Comments } from "@/components/Comments";
 
 type SharedNote = {
   id: string;
@@ -146,6 +147,10 @@ export default function SharedNote() {
               <article className="prose prose-invert max-w-none">
                 <ReactMarkdown>{note.content}</ReactMarkdown>
               </article>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-neutral-800">
+              <Comments noteId={params.id as string} />
             </div>
           </div>
         </div>
