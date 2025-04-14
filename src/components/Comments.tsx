@@ -43,7 +43,7 @@ export function Comments({ noteId, className }: CommentsProps) {
       if (!response.ok) throw new Error("Failed to fetch comments");
       const data = await response.json();
       return data;
-    } catch (err) {
+    } catch (err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("Failed to load comments");
       return null;
     }
@@ -116,7 +116,7 @@ export function Comments({ noteId, className }: CommentsProps) {
       setComments((prev) => [comment, ...prev]);
       setTotalComments((prev) => prev + 1);
       setNewComment("");
-    } catch (err) {
+    } catch (err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("Failed to post comment");
     } finally {
       setIsLoading(false);
@@ -136,7 +136,7 @@ export function Comments({ noteId, className }: CommentsProps) {
 
       setComments((prev) => prev.filter((comment) => comment.id !== commentId));
       setTotalComments((prev) => prev - 1);
-    } catch (err) {
+    } catch (err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("Failed to delete comment");
     }
   };

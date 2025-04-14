@@ -154,7 +154,7 @@ export async function POST(
 // Delete a comment
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string; commentId: string } }
+  { params }: { params: { id: string; commentId: string } } // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
   try {
     const session = await getServerSession(authOptions);

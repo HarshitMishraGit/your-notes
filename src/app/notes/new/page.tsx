@@ -8,14 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import Link from "next/link";
 
 // Import MD Editor dynamically to avoid SSR issues
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 export default function NewNote() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState(
     "# New Note\n\nStart writing your note here..."

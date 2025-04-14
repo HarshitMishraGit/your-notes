@@ -32,7 +32,7 @@ type SearchFilter = "all" | "title" | "content" | "tags";
 
 export default function Home() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSearch, setShowSearch] = useState(false);

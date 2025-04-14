@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { ArrowLeft, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { useSession } from "next-auth/react";
 
 type User = {
   id: string;
@@ -38,8 +37,6 @@ type Note = {
 
 export default function UserProfile() {
   const params = useParams();
-  const router = useRouter();
-  const { data: session, status } = useSession();
   const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -91,7 +88,7 @@ export default function UserProfile() {
             {error || "User not found"}
           </h1>
           <p className="mb-6 text-neutral-400">
-            The user you're looking for doesn't exist.
+           {" The user you're looking for doesn't exist."}  
           </p>
           <Link href="/">
             <Button className="bg-violet-600 hover:bg-violet-700">

@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, User } from "lucide-react";
-import { useSession } from "next-auth/react";
 import ReactMarkdown from "react-markdown";
 import { Comments } from "@/components/Comments";
 
@@ -26,7 +25,7 @@ type SharedNote = {
 
 export default function SharedNote() {
   const params = useParams();
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const [note, setNote] = useState<SharedNote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +79,7 @@ export default function SharedNote() {
             {error || "Note not found"}
           </h1>
           <p className="mb-6 text-neutral-400">
-            The note you're looking for doesn't exist or is not shared publicly.
+            {"The note you're looking for doesn't exist or is not shared publicly."}
           </p>
           <Link href="/">
             <Button className="bg-violet-600 hover:bg-violet-700">

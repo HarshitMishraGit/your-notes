@@ -39,7 +39,7 @@ export default function SignInPage() {
         router.push("/");
         router.refresh();
       }
-    } catch (error) {
+    } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("An error occurred. Please try again.");
     }
   };
@@ -162,7 +162,7 @@ export default function SignInPage() {
         </form>
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-sm text-center text-neutral-500">
-            Don't have an account?{" "}
+           {" Don't have an account?"}
             <Link
               href="/auth/signup"
               className="text-violet-400 hover:text-violet-300 transition-colors"

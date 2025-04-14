@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile }) { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (account?.provider === "google" || account?.provider === "github") {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email! },
@@ -102,8 +102,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      // Always redirect to home page after sign in
+    async redirect({ url, baseUrl }) { // eslint-disable-line @typescript-eslint/no-unused-vars
       return baseUrl;
     },
   },

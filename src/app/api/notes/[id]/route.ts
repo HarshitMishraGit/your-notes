@@ -43,7 +43,7 @@ export async function GET(request: Request, { params }: Params) {
     // If the note is public, anyone can access it
     if (note.isPublic) {
       // Include author info but remove userId for privacy
-      const { userId, ...publicNote } = note;
+      const { userId, ...publicNote } = note; // eslint-disable-line @typescript-eslint/no-unused-vars
       return NextResponse.json(publicNote);
     }
 

@@ -36,7 +36,7 @@ type Note = {
 export default function NotePage() {
   const params = useParams();
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [note, setNote] = useState<Note | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
