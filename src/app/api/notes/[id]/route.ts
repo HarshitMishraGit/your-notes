@@ -2,17 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
 // GET /api/notes/[id] - Get a specific note
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession();
-    const { id } = await params;
+    const { pathname } = new URL(request.url);
+    const id = pathname.split("/")[3]; // /api/notes/[id]
 
     // First check if the note exists
     const note = await prisma.note.findUnique({
@@ -76,10 +71,11 @@ export async function GET(request: Request, { params }: Params) {
 }
 
 // PUT /api/notes/[id] - Update a note
-export async function PUT(request: Request, { params }: Params) {
+export async function PUT(request: Request) {
   try {
     const session = await getServerSession();
-    const { id } = params;
+    const { pathname } = new URL(request.url);
+    const id = pathname.split("/")[3]; // /api/notes/[id]
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -140,10 +136,11 @@ export async function PUT(request: Request, { params }: Params) {
 }
 
 // DELETE /api/notes/[id] - Delete a note
-export async function DELETE(request: Request, { params }: Params) {
+export async function DELETE(request: Request) {
   try {
     const session = await getServerSession();
-    const { id } = params;
+    const { pathname } = new URL(request.url);
+    const id = pathname.split("/")[3]; // /api/notes/[id]
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

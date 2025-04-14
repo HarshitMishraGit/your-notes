@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
 // GET /api/users/[id]/notes - Get a user's public notes
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: Request) {
   try {
-    const { id } = params;
+    const { pathname } = new URL(request.url);
+    const id = pathname.split("/")[3]; // /api/users/[id]/notes
 
     // Check if the user exists
     const user = await prisma.user.findUnique({

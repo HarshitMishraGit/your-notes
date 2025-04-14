@@ -42,7 +42,7 @@ export async function PUT(request: Request) {
     }
 
     // Verify current password
-    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password ?? "");
     if (!passwordMatch) {
       return NextResponse.json(
         { message: "Current password is incorrect" },

@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 // Get comments for a note
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const noteId = params.id;
-  const { searchParams } = new URL(request.url);
+export async function GET(request: Request) {
+  const { searchParams, pathname } = new URL(request.url);
+  const noteId = pathname.split("/")[3]; // /api/notes/[id]/comments
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "5");
   const skip = (page - 1) * limit;
@@ -62,10 +59,7 @@ export async function GET(
 }
 
 // Create a new comment
-export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     console.log("Session:", session);
@@ -85,8 +79,8 @@ export async function POST(
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
-    const noteId = params.id;
+    const { pathname } = new URL(request.url);
+    const noteId = pathname.split("/")[3]; // /api/notes/[id]/comments
     const { content } = await request.json();
     console.log("Creating comment for note:", noteId, "by user:", user.id);
 
@@ -152,10 +146,7 @@ export async function POST(
 }
 
 // Delete a comment
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string; commentId: string } } // eslint-disable-line @typescript-eslint/no-unused-vars
-) {
+export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
