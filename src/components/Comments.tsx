@@ -32,6 +32,7 @@ export function Comments({ noteId, className }: CommentsProps) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [totalComments, setTotalComments] = useState(0);
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const fetchComments = async (pageNum: number) => {
@@ -88,6 +89,7 @@ export function Comments({ noteId, className }: CommentsProps) {
       if (data) {
         setComments(data.comments);
         setHasMore(data.hasMore);
+        setTotalComments(data.total);
       }
     };
 
@@ -112,6 +114,7 @@ export function Comments({ noteId, className }: CommentsProps) {
 
       const comment = await response.json();
       setComments((prev) => [comment, ...prev]);
+      setTotalComments((prev) => prev + 1);
       setNewComment("");
     } catch (err) {
       setError("Failed to post comment");
@@ -132,6 +135,7 @@ export function Comments({ noteId, className }: CommentsProps) {
       if (!response.ok) throw new Error("Failed to delete comment");
 
       setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+      setTotalComments((prev) => prev - 1);
     } catch (err) {
       setError("Failed to delete comment");
     }
@@ -139,7 +143,12 @@ export function Comments({ noteId, className }: CommentsProps) {
 
   return (
     <div className={cn("space-y-4", className)}>
-      <h3 className="text-lg font-semibold text-neutral-200">Comments</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-neutral-200">Comments</h3>
+        <span className="text-sm text-neutral-400">
+          {totalComments} {totalComments === 1 ? "comment" : "comments"}
+        </span>
+      </div>
 
       {session ? (
         <form onSubmit={handleSubmit} className="space-y-2">
