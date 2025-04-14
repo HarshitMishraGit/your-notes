@@ -25,8 +25,10 @@ export default function NewNote() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("status in new note", status);
     if (status === "unauthenticated") {
       router.push("/auth/signin");
+      console.log("unauthenticated in new note");
     }
   }, [status, router]);
 

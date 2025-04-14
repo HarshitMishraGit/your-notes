@@ -39,6 +39,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // For API routes that don't require authentication
+  if (path.startsWith("/api/auth/")) {
+    return NextResponse.next();
+  }
+
   const token = await getToken({ req: request });
 
   // Redirect unauthenticated users to login if trying to access protected routes
