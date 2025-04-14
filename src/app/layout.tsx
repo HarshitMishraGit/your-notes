@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { Providers } from "@/components/providers/session-provider";
 import UserDropdown from "@/components/UserDropdown";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,8 +37,15 @@ export default async function RootLayout({
                   Notes App
                 </Link>
                 <div className="flex items-center gap-3">
-                  {/* <ThemeToggle /> */}
-                  {session && <UserDropdown />}
+                  {session ? (
+                    <UserDropdown />
+                  ) : (
+                    <Link href="/auth/signin">
+                      <Button className="bg-violet-600 hover:bg-violet-700 text-white">
+                        Sign In
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </header>
