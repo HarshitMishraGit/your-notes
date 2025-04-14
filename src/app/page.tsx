@@ -125,94 +125,96 @@ export default function Home() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-white">My Notes</h1>
           <div className="flex items-center gap-2">
-            {showSearch ? (
-              <div className="flex items-center bg-neutral-900 rounded-lg border border-neutral-800 animate-in fade-in duration-200">
-                <div className="flex items-center gap-1 mr-2">
+            <div className="relative flex items-center">
+              {showSearch ? (
+                <div className="flex items-center h-10 bg-neutral-900 rounded-lg border border-neutral-800 transition-all duration-700f">
+                  <div className="flex items-center gap-1 pl-2 mr-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-xs px-2 py-1 h-auto ${
+                        searchFilter === "all"
+                          ? "bg-violet-600 text-white"
+                          : "text-neutral-400 hover:text-white"
+                      }`}
+                      onClick={() => setSearchFilter("all")}
+                    >
+                      All
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-xs px-2 py-1 h-auto ${
+                        searchFilter === "title"
+                          ? "bg-violet-600 text-white"
+                          : "text-neutral-400 hover:text-white"
+                      }`}
+                      onClick={() => setSearchFilter("title")}
+                    >
+                      <Type className="h-3 w-3 mr-1" />
+                      Title
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-xs px-2 py-1 h-auto ${
+                        searchFilter === "content"
+                          ? "bg-violet-600 text-white"
+                          : "text-neutral-400 hover:text-white"
+                      }`}
+                      onClick={() => setSearchFilter("content")}
+                    >
+                      <FileText className="h-3 w-3 mr-1" />
+                      Content
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-xs px-2 py-1 h-auto ${
+                        searchFilter === "tags"
+                          ? "bg-violet-600 text-white"
+                          : "text-neutral-400 hover:text-white"
+                      }`}
+                      onClick={() => setSearchFilter("tags")}
+                    >
+                      <Tag className="h-3 w-3 mr-1" />
+                      Tags
+                    </Button>
+                  </div>
+                  <Input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search notes..."
+                    className="h-9 w-[200px] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className={`text-xs px-2 py-1 h-auto ${
-                      searchFilter === "all"
-                        ? "bg-violet-600 text-white"
-                        : "text-neutral-400 hover:text-white"
-                    }`}
-                    onClick={() => setSearchFilter("all")}
+                    size="icon"
+                    className="h-8 w-8 text-neutral-400 mx-1"
+                    onClick={() => {
+                      setShowSearch(false);
+                      setSearchQuery("");
+                    }}
                   >
-                    All
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`text-xs px-2 py-1 h-auto ${
-                      searchFilter === "title"
-                        ? "bg-violet-600 text-white"
-                        : "text-neutral-400 hover:text-white"
-                    }`}
-                    onClick={() => setSearchFilter("title")}
-                  >
-                    <Type className="h-3 w-3 mr-1" />
-                    Title
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`text-xs px-2 py-1 h-auto ${
-                      searchFilter === "content"
-                        ? "bg-violet-600 text-white"
-                        : "text-neutral-400 hover:text-white"
-                    }`}
-                    onClick={() => setSearchFilter("content")}
-                  >
-                    <FileText className="h-3 w-3 mr-1" />
-                    Content
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`text-xs px-2 py-1 h-auto ${
-                      searchFilter === "tags"
-                        ? "bg-violet-600 text-white"
-                        : "text-neutral-400 hover:text-white"
-                    }`}
-                    onClick={() => setSearchFilter("tags")}
-                  >
-                    <Tag className="h-3 w-3 mr-1" />
-                    Tags
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <Input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder="Search notes..."
-                  className="h-9 w-[200px] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+              ) : (
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  className="h-8 w-8 text-neutral-400"
-                  onClick={() => {
-                    setShowSearch(false);
-                    setSearchQuery("");
-                  }}
+                  className="bg-transparent h-10 w-10 text-white border-neutral-800 hover:bg-neutral-900 transition-all duration-200 ease-in-out animate-in fade-in"
+                  onClick={() => setShowSearch(true)}
                 >
-                  <X className="h-4 w-4" />
+                  <SearchIcon className="h-4 w-4" />
                 </Button>
-              </div>
-            ) : (
-              <Button
-                variant="outline"
-                size="icon"
-                className="bg-transparent text-white border-neutral-800 hover:bg-neutral-900"
-                onClick={() => setShowSearch(true)}
-              >
-                <SearchIcon className="h-4 w-4" />
-              </Button>
-            )}
+              )}
+            </div>
             <Button
               onClick={() => router.push("/notes/new")}
-              className="bg-violet-600 hover:bg-violet-700"
+              className="bg-violet-600 hover:bg-violet-700 h-10"
             >
               <PlusIcon className="h-4 w-4 mr-2" />
               New Note
