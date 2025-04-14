@@ -146,7 +146,7 @@ export default function NewNote() {
                 id="public"
                 checked={isPublic}
                 onCheckedChange={setIsPublic}
-                className="data-[state=checked]:bg-violet-600"
+                className="data-[state=checked]:bg-violet-600 data-[state=unchecked]:bg-neutral-700 h-6 w-11 transition-colors duration-200"
               />
             </div>
           </div>
