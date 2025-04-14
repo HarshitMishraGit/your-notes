@@ -53,7 +53,7 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-transparent to-neutral-950"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 via-transparent to-neutral-950 -z-1"></div>
       <Card className="w-full max-w-md mx-4 bg-black/60 border-neutral-800 backdrop-blur-xl">
         <CardHeader className="space-y-1">
           <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
