@@ -9,9 +9,27 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const noteId = params.id;
+  const { searchParams } = new URL(request.url);
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "5");
+  const skip = (page - 1) * limit;
 
   try {
-    console.log("Fetching comments for note:", noteId);
+    console.log(
+      "Fetching comments for note:",
+      noteId,
+      "page:",
+      page,
+      "limit:",
+      limit
+    );
+
+    // Get total count
+    const totalCount = await prisma.comment.count({
+      where: { noteId },
+    });
+
+    // Get paginated comments
     const comments = await prisma.comment.findMany({
       where: { noteId },
       include: {
@@ -24,9 +42,16 @@ export async function GET(
         },
       },
       orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
     });
-    console.log("Found comments:", comments.length);
-    return NextResponse.json(comments);
+
+    console.log("Found comments:", comments.length, "total:", totalCount);
+    return NextResponse.json({
+      comments,
+      hasMore: skip + comments.length < totalCount,
+      total: totalCount,
+    });
   } catch (error) {
     console.error("Error fetching comments:", error);
     return NextResponse.json(
@@ -162,15 +187,15 @@ export async function DELETE(
 
     const comment = await prisma.comment.findUnique({
       where: { id: commentId },
-      include: { note: true },
+      include: { user: true },
     });
 
     if (!comment) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    // Only allow deletion if the user is the comment author or the note owner
-    if (comment.userId !== user.id && comment.note.userId !== user.id) {
+    // Only allow deletion if the user is the comment author
+    if (comment.userId !== user.id) {
       return NextResponse.json(
         { error: "Not authorized to delete this comment" },
         { status: 403 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,6 @@ interface Comment {
     name: string | null;
     image: string | null;
   };
-  note?: {
-    userId: string;
-  };
 }
 
 interface CommentsProps {
@@ -32,20 +29,69 @@ export function Comments({ noteId, className }: CommentsProps) {
   const [newComment, setNewComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
-  const fetchComments = async () => {
+  const fetchComments = async (pageNum: number) => {
     try {
-      const response = await fetch(`/api/notes/${noteId}/comments`);
+      const response = await fetch(
+        `/api/notes/${noteId}/comments?page=${pageNum}&limit=5`
+      );
       if (!response.ok) throw new Error("Failed to fetch comments");
       const data = await response.json();
-      setComments(data);
+      return data;
     } catch (err) {
       setError("Failed to load comments");
+      return null;
     }
   };
 
+  const loadMoreComments = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    const data = await fetchComments(page + 1);
+    setIsLoadingMore(false);
+
+    if (data) {
+      setComments((prev) => [...prev, ...data.comments]);
+      setHasMore(data.hasMore);
+      setPage((prev) => prev + 1);
+    }
+  }, [page, hasMore, isLoadingMore, noteId]);
+
   useEffect(() => {
-    fetchComments();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMoreComments();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => observer.disconnect();
+  }, [loadMoreComments, hasMore]);
+
+  useEffect(() => {
+    const loadInitialComments = async () => {
+      setIsLoading(true);
+      const data = await fetchComments(1);
+      setIsLoading(false);
+
+      if (data) {
+        setComments(data.comments);
+        setHasMore(data.hasMore);
+      }
+    };
+
+    loadInitialComments();
   }, [noteId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -152,22 +198,31 @@ export function Comments({ noteId, className }: CommentsProps) {
                     })}
                   </span>
                 </div>
-                {(session?.user?.id === comment.user.id ||
-                  session?.user?.id === comment.note?.userId) && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-neutral-500 hover:text-red-500"
-                    onClick={() => handleDelete(comment.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
+                {session?.user?.email &&
+                  comment.user.id === session.user.id && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-neutral-500 hover:text-red-500"
+                      onClick={() => handleDelete(comment.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
               </div>
               <p className="text-sm text-neutral-300">{comment.content}</p>
             </div>
           </div>
         ))}
+
+        {/* Loading indicator and observer target */}
+        <div ref={observerTarget} className="h-4 w-full">
+          {isLoadingMore && (
+            <div className="flex justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-violet-500" />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
