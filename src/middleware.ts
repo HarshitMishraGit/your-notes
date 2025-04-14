@@ -26,7 +26,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // For API routes starting with /api/notes/
-  if (path.startsWith("/api/notes/") && !path.startsWith("/api/notes/all")) {
+  if (path.startsWith("/api/notes/")) {
     // For GET requests to a specific note, we'll check the auth in the API route
     // This allows public notes to be accessed
     if (request.method === "GET") {

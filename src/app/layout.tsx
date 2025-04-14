@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { Providers } from "@/components/providers/session-provider";
 import UserDropdown from "@/components/UserDropdown";
 import Link from "next/link";
@@ -11,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Notes App",
-  description: "A simple notes app built with Next.js",
+  description: "A simple notes application",
 };
 
 export default async function RootLayout({
@@ -19,7 +20,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" className="dark">

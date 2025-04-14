@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
 // GET /api/notes/[id] - Get a specific note
 export async function GET(request: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     const { pathname } = new URL(request.url);
     const id = pathname.split("/")[3]; // /api/notes/[id]
 
@@ -73,7 +74,7 @@ export async function GET(request: Request) {
 // PUT /api/notes/[id] - Update a note
 export async function PUT(request: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     const { pathname } = new URL(request.url);
     const id = pathname.split("/")[3]; // /api/notes/[id]
 
@@ -138,7 +139,7 @@ export async function PUT(request: Request) {
 // DELETE /api/notes/[id] - Delete a note
 export async function DELETE(request: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     const { pathname } = new URL(request.url);
     const id = pathname.split("/")[3]; // /api/notes/[id]
 
